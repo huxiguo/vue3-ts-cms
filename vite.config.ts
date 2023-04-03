@@ -12,7 +12,11 @@ export default defineConfig({
 		vue(),
 		// 自动导入
 		AutoImport({
-			resolvers: [ElementPlusResolver()]
+			resolvers: [ElementPlusResolver()],
+			imports: ['vue', 'pinia', 'vue-router'],
+			eslintrc: {
+				enabled: true
+			}
 		}),
 		// 组件
 		Components({

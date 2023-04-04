@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ElForm, FormRules } from 'element-plus'
+import { ElMessage, type ElForm, type FormRules } from 'element-plus'
 
 const account = reactive({
 	name: '',
@@ -43,14 +43,22 @@ const accountRules: FormRules = {
 		}
 	]
 }
-const accountLoginFormRef = ref()
+const accountLoginFormRef = ref<InstanceType<typeof ElForm>>()
 // 登录
 const loginAction = () => {
 	accountLoginFormRef.value?.validate((valid: boolean) => {
 		if (valid) {
 			console.log('验证成功')
+			ElMessage({
+				message: '验证成功',
+				type: 'success'
+			})
 		} else {
 			console.log('验证失败')
+			ElMessage({
+				message: '验证失败',
+				type: 'error'
+			})
 		}
 	})
 }

@@ -5,6 +5,10 @@ import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import {
+	createStyleImportPlugin,
+	ElementPlusResolve
+} from 'vite-plugin-style-import'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -17,6 +21,19 @@ export default defineConfig({
 			eslintrc: {
 				enabled: true
 			}
+		}),
+		// 自动导入样式
+		createStyleImportPlugin({
+			resolves: [ElementPlusResolve()],
+			libs: [
+				{
+					libraryName: 'element-plus',
+					esModule: true,
+					resolveStyle: (name: string) => {
+						return `element-plus/theme-chalk/${name}.css`
+					}
+				}
+			]
 		}),
 		// 组件
 		Components({

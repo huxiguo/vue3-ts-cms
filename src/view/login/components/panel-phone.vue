@@ -7,9 +7,6 @@
 			<el-form-item label="Activity zone">
 				<el-input />
 			</el-form-item>
-			<el-form-item label="Activity form">
-				<el-input />
-			</el-form-item>
 		</el-form>
 	</div>
 </template>

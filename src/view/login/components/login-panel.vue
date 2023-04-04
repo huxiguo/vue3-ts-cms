@@ -10,7 +10,7 @@
 							<span class="text">账号登录</span>
 						</div>
 					</template>
-					<panelAccount />
+					<panelAccount ref="panelAccountRef" />
 				</el-tab-pane>
 				<el-tab-pane label="手机登录" name="phone">
 					<template #label>
@@ -41,13 +41,19 @@
 <script setup lang="ts">
 import panelAccount from './panel-account.vue'
 import panelPhone from './panel-phone.vue'
+
 const isKeepPwd = ref(false)
 const activeName = ref('account')
+
+const panelAccountRef = ref<InstanceType<typeof panelAccount>>()
+
 const handleLoginBtnClick = () => {
 	if (activeName.value === 'phone') {
 		console.log('phone is active')
 	} else {
 		console.log('account is active')
+		// 子组件实例
+		panelAccountRef.value?.loginAction()
 	}
 }
 </script>

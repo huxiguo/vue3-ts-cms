@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<el-form
+			ref="accountLoginFormRef"
 			:rules="accountRules"
 			:model="account"
 			label-width="60px"
-			ref="accountLoginFormRef"
 			status-icon
 		>
 			<el-form-item label="账号" prop="name">
@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import type { FormRules } from 'element-plus'
+import type { ElForm, FormRules } from 'element-plus'
 
 const account = reactive({
 	name: '',
@@ -43,6 +43,21 @@ const accountRules: FormRules = {
 		}
 	]
 }
+const accountLoginFormRef = ref()
+// 登录
+const loginAction = () => {
+	accountLoginFormRef.value?.validate((valid: boolean) => {
+		if (valid) {
+			console.log('验证成功')
+		} else {
+			console.log('验证失败')
+		}
+	})
+}
+// 暴露子组件里面属性
+defineExpose({
+	loginAction
+})
 </script>
 
 <style scoped></style>

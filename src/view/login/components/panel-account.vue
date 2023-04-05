@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import useLoginStore from '@/store/login/login'
 import type { IAccount } from '@/types/login'
-import { ElMessage, type ElForm, type FormRules } from 'element-plus'
+import type { ElForm, FormRules } from 'element-plus'
 
 const account = reactive<IAccount>({
 	name: 'coderwhy',
@@ -55,10 +55,6 @@ const loginAction = () => {
 			// 请求登录
 			const { name, password } = account
 			loginStore.loginAccountAction({ name, password })
-			ElMessage({
-				message: '验证成功',
-				type: 'success'
-			})
 		} else {
 			ElMessage({
 				message: '请输入正确的账号和密码',

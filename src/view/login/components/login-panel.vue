@@ -48,10 +48,7 @@ const activeName = ref('account')
 const panelAccountRef = ref<InstanceType<typeof panelAccount>>()
 
 const handleLoginBtnClick = () => {
-	if (activeName.value === 'phone') {
-		console.log('phone is active')
-	} else {
-		console.log('account is active')
+	if (activeName.value === 'account') {
 		// 子组件实例
 		panelAccountRef.value?.loginAction()
 	}

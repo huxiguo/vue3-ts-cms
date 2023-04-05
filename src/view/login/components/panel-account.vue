@@ -22,11 +22,12 @@
 </template>
 
 <script setup lang="ts">
+import useLoginStore from '@/store/login/login'
 import { ElMessage, type ElForm, type FormRules } from 'element-plus'
 
 const account = reactive({
-	name: '',
-	password: ''
+	name: 'coderwhy',
+	password: '123456'
 })
 // 校验规则
 const accountRules: FormRules = {
@@ -44,19 +45,22 @@ const accountRules: FormRules = {
 	]
 }
 const accountLoginFormRef = ref<InstanceType<typeof ElForm>>()
+
+const loginStore = useLoginStore()
 // 登录
 const loginAction = () => {
-	accountLoginFormRef.value?.validate((valid: boolean) => {
+	accountLoginFormRef.value?.validate(async (valid: boolean) => {
 		if (valid) {
-			console.log('验证成功')
+			// 请求登录
+			const { name, password } = account
+			loginStore.loginAccountAction({ name, password })
 			ElMessage({
 				message: '验证成功',
 				type: 'success'
 			})
 		} else {
-			console.log('验证失败')
 			ElMessage({
-				message: '验证失败',
+				message: '请输入正确的账号和密码',
 				type: 'error'
 			})
 		}

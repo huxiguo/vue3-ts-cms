@@ -4,8 +4,8 @@
 		"env.d.ts",
 		"src/**/*",
 		"src/**/*.vue",
-		"./auto-imports.d.ts",
-		"./components.d.ts"
+		"auto-imports.d.ts",
+		"components.d.ts"
 	],
 	"compilerOptions": {
 		"ignoreDeprecations": "5.0",

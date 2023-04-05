@@ -23,9 +23,10 @@
 
 <script setup lang="ts">
 import useLoginStore from '@/store/login/login'
+import type { IAccount } from '@/types/login'
 import { ElMessage, type ElForm, type FormRules } from 'element-plus'
 
-const account = reactive({
+const account = reactive<IAccount>({
 	name: 'coderwhy',
 	password: '123456'
 })

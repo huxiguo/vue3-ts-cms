@@ -8,8 +8,7 @@ module.exports = {
 		'eslint:recommended',
 		'@vue/eslint-config-typescript',
 		'@vue/eslint-config-prettier/skip-formatting',
-		'plugin:prettier/recommended',
-		'./.eslintrc-auto-import.json'
+		'plugin:prettier/recommended'
 	],
 	parserOptions: {
 		ecmaVersion: 'latest'

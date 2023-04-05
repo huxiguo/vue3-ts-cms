@@ -1,19 +1,19 @@
 <template>
-	<div class="login">
-		<loginPanel />
-	</div>
+	<Suspense>
+		<div>logiin</div>
+	</Suspense>
 </template>
+
 <script setup lang="ts">
-import loginPanel from './components/login-panel.vue'
+import myRequest from '@/service'
+const { data: res } = await myRequest.post({
+	url: '/login',
+	data: {
+		name: 'coderwhy',
+		password: '123456'
+	}
+})
+console.log('res', res)
 </script>
 
-<style scoped lang="less">
-.login {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 100%;
-	height: 100%;
-	background-image: url('@/assets/img/login-bg.svg');
-}
-</style>
+<style scoped></style>

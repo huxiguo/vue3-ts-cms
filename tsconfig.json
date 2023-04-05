@@ -1,23 +1,17 @@
 {
-	"extends": "@vue/tsconfig/tsconfig.web.json",
-	"include": [
-		"env.d.ts",
-		"src/**/*",
-		"src/**/*.vue",
-		"./auto-imports.d.ts",
-		"./components.d.ts"
-	],
-	"compilerOptions": {
-		"ignoreDeprecations": "5.0",
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["./src/*"]
-		}
-	},
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "compilerOptions": {
+    "ignoreDeprecations": "5.0",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
 
-	"references": [
-		{
-			"path": "./tsconfig.node.json"
-		}
-	]
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

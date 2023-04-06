@@ -25,7 +25,7 @@
 import useLoginStore from '@/store/login/login'
 import type { IAccount } from '@/types/login'
 import { localCache } from '@/utils/cache'
-import type { ElForm, FormRules } from 'element-plus'
+import { ElMessage, type ElForm, type FormRules } from 'element-plus'
 
 const account = reactive<IAccount>({
 	name: localCache.getCache('name') ?? '',

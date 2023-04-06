@@ -10,9 +10,7 @@ class Cache {
 			type === CacheType.localStorage ? localStorage : sessionStorage
 	}
 	setCache(key: string, value: any) {
-		if (value) {
-			this.storage.setItem(key, JSON.stringify(value))
-		}
+		this.storage.setItem(key, JSON.stringify(value))
 	}
 	getCache(key: string) {
 		const value = this.storage.getItem(key)

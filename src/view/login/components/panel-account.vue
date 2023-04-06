@@ -24,11 +24,12 @@
 <script setup lang="ts">
 import useLoginStore from '@/store/login/login'
 import type { IAccount } from '@/types/login'
+import { localCache } from '@/utils/cache'
 import type { ElForm, FormRules } from 'element-plus'
 
 const account = reactive<IAccount>({
-	name: 'coderwhy',
-	password: '123456'
+	name: localCache.getCache('name') ?? '',
+	password: localCache.getCache('password') ?? ''
 })
 // 校验规则
 const accountRules: FormRules = {
@@ -49,12 +50,21 @@ const accountLoginFormRef = ref<InstanceType<typeof ElForm>>()
 
 const loginStore = useLoginStore()
 // 登录
-const loginAction = () => {
+const loginAction = (isKeepPwd: boolean) => {
 	accountLoginFormRef.value?.validate(async (valid: boolean) => {
 		if (valid) {
 			// 请求登录
 			const { name, password } = account
-			loginStore.loginAccountAction({ name, password })
+			loginStore.loginAccountAction({ name, password }).then(() => {
+				if (isKeepPwd) {
+					// 记住密码
+					localCache.setCache('name', name)
+					localCache.setCache('password', password)
+				} else {
+					localCache.removeCache('name')
+					localCache.removeCache('password')
+				}
+			})
 		} else {
 			ElMessage({
 				message: '请输入正确的账号和密码',

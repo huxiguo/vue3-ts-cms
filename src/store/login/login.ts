@@ -11,8 +11,8 @@ import { ElMessage } from 'element-plus'
 import { defineStore } from 'pinia'
 const useLoginStore = defineStore('login', () => {
 	const token = ref<string>(localCache.getCache(LOGIN_TOKEN) ?? '')
-	const userInfo = ref<any>({})
-	const userMenus = ref<any>([])
+	const userInfo = ref<any>(localCache.getCache('userInfo') ?? {})
+	const userMenus = ref<any>(localCache.getCache('userMenus') ?? [])
 	async function loginAccountAction(account: IAccount) {
 		// 请求登录接口
 		const res = await accountLoginRequest(account)
@@ -23,15 +23,18 @@ const useLoginStore = defineStore('login', () => {
 			})
 			const { data } = res
 			token.value = data.token
-			// 本地缓存
 			localCache.setCache(LOGIN_TOKEN, token.value)
 			// 获取当前用户详细信息
 			const getUserInfoByIdRes = await getUserInfoById(data.id)
 			userInfo.value = getUserInfoByIdRes.data
-
+			console.log('userInfo.value', userInfo.value)
 			// 获取当前用户的menus
 			const userMenusRes = await getUserMenusByRoleId(userInfo.value.role.id)
 			userMenus.value = userMenusRes.data
+			// 本地缓存
+
+			localCache.setCache('userInfo', userInfo.value)
+			localCache.setCache('userMenus', userMenus.value)
 			// 页面跳转
 			router.push('/main')
 		} else {

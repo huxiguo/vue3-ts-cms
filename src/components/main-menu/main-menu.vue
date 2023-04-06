@@ -5,42 +5,33 @@
 			<h2 class="title">SEEKHOO</h2>
 		</div>
 		<div class="menu">
-			<el-menu default-active="2">
-				<el-sub-menu index="1">
-					<template #title>
-						<el-icon><location /></el-icon>
-						<span>Navigator One</span>
-					</template>
-					<el-menu-item-group title="Group One">
-						<el-menu-item index="1-1">item one</el-menu-item>
-						<el-menu-item index="1-2">item two</el-menu-item>
-					</el-menu-item-group>
-					<el-menu-item-group title="Group Two">
-						<el-menu-item index="1-3">item three</el-menu-item>
-					</el-menu-item-group>
-					<el-sub-menu index="1-4">
-						<template #title>item four</template>
-						<el-menu-item index="1-4-1">item one</el-menu-item>
+			<el-menu
+				active-text-color="#fff"
+				text-color="#b7bdc3"
+				background-color="#001529"
+			>
+				<template v-for="item in userMenus" :key="item.id">
+					<el-sub-menu :index="item.id + ''">
+						<template #title>
+							<span>{{ item.name }}</span>
+						</template>
+						<template v-for="subitem in item.children" :key="subitem.is">
+							<el-menu-item :index="subitem.id + ''">
+								{{ subitem.name }}
+							</el-menu-item>
+						</template>
 					</el-sub-menu>
-				</el-sub-menu>
-				<el-menu-item index="2">
-					<el-icon><icon-menu /></el-icon>
-					<span>Navigator Two</span>
-				</el-menu-item>
-				<el-menu-item index="3" disabled>
-					<el-icon><document /></el-icon>
-					<span>Navigator Three</span>
-				</el-menu-item>
-				<el-menu-item index="4">
-					<el-icon><setting /></el-icon>
-					<span>Navigator Four</span>
-				</el-menu-item>
+				</template>
 			</el-menu>
 		</div>
 	</div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import useLoginStore from '@/store/login/login'
+const loginStore = useLoginStore()
+const { userMenus } = storeToRefs(loginStore)
+</script>
 
 <style lang="less" scoped>
 .main-menu {
@@ -64,6 +55,22 @@
 			color: #ffffff;
 			white-space: nowrap;
 		}
+	}
+	.el-menu {
+		border-right: none;
+		user-select: none;
+	}
+	.el-sub-menu {
+		.el-menu-item {
+			padding-left: 50px !important;
+			background-color: #0c2135;
+		}
+	}
+	.el-menu-item:hover {
+		color: #fff;
+	}
+	.el-menu-item.is-active {
+		background-color: #0a60bd;
 	}
 }
 </style>

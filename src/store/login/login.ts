@@ -9,7 +9,7 @@ import type { IAccount } from '@/types/login'
 import { localCache } from '@/utils/cache'
 import { ElMessage } from 'element-plus'
 import { defineStore } from 'pinia'
-import type { RouteRecordRaw } from 'vue-router'
+
 const useLoginStore = defineStore('login', () => {
 	const token = ref<string>(localCache.getCache(LOGIN_TOKEN) ?? '')
 	const userInfo = ref<any>(localCache.getCache('userInfo') ?? {})

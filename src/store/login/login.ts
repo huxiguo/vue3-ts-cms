@@ -9,6 +9,7 @@ import type { IAccount } from '@/types/login'
 import { localCache } from '@/utils/cache'
 import { ElMessage } from 'element-plus'
 import { defineStore } from 'pinia'
+import type { RouteRecordRaw } from 'vue-router'
 const useLoginStore = defineStore('login', () => {
 	const token = ref<string>(localCache.getCache(LOGIN_TOKEN) ?? '')
 	const userInfo = ref<any>(localCache.getCache('userInfo') ?? {})
@@ -27,7 +28,6 @@ const useLoginStore = defineStore('login', () => {
 			// 获取当前用户详细信息
 			const getUserInfoByIdRes = await getUserInfoById(data.id)
 			userInfo.value = getUserInfoByIdRes.data
-			console.log('userInfo.value', userInfo.value)
 			// 获取当前用户的menus
 			const userMenusRes = await getUserMenusByRoleId(userInfo.value.role.id)
 			userMenus.value = userMenusRes.data
@@ -35,6 +35,12 @@ const useLoginStore = defineStore('login', () => {
 
 			localCache.setCache('userInfo', userInfo.value)
 			localCache.setCache('userMenus', userMenus.value)
+
+			// 动态路由
+			// const localRoute: RouteRecordRaw = []
+			const files = import.meta.glob('@/router/main/**/*.ts', { eager: true })
+			console.log(files)
+
 			// 页面跳转
 			router.push('/main')
 		} else {

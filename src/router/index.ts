@@ -15,7 +15,26 @@ const router = createRouter({
 		},
 		{
 			path: '/main',
-			component: () => import('@/view/main/main.vue')
+			component: () => import('@/view/main/main.vue'),
+			children: [
+				{
+					path: '/main/analysis/dashboard',
+					component: () =>
+						import('@/view/main/analysis/dashboard/dashboard.vue')
+				},
+				{
+					path: '/main/analysis/overview',
+					component: () => import('@/view/main/analysis/overview/overview.vue')
+				},
+				{
+					path: '/main/system/user',
+					component: () => import('@/view/main/system/user/user.vue')
+				},
+				{
+					path: '/main/system/role',
+					component: () => import('@/view/main/system/role/role.vue')
+				}
+			]
 		},
 		{
 			path: '/:pathMatch(.*)',

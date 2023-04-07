@@ -20,7 +20,10 @@
 							<span>{{ item.name }}</span>
 						</template>
 						<template v-for="subitem in item.children" :key="subitem.is">
-							<el-menu-item :index="subitem.id + ''">
+							<el-menu-item
+								:index="subitem.id + ''"
+								@click="handelMenuItemClick(subitem)"
+							>
 								{{ subitem.name }}
 							</el-menu-item>
 						</template>
@@ -33,6 +36,7 @@
 
 <script setup lang="ts">
 import useLoginStore from '@/store/login/login'
+const router = useRouter()
 const loginStore = useLoginStore()
 const { userMenus } = storeToRefs(loginStore)
 defineProps({
@@ -41,6 +45,10 @@ defineProps({
 		default: false
 	}
 })
+const handelMenuItemClick = (item: any) => {
+	const url = item.url
+	router.push(url)
+}
 </script>
 
 <style lang="less" scoped>

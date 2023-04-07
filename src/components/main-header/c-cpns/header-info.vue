@@ -20,11 +20,11 @@
 						class="avatar"
 						src="https://avatars.githubusercontent.com/u/71011744?v=4"
 					/>
-					<span class="name">coderwhy</span>
+					<span class="name">huxiguo</span>
 				</span>
 				<template #dropdown>
 					<el-dropdown-menu>
-						<el-dropdown-item>
+						<el-dropdown-item @click="handleExitClick">
 							<el-icon><CircleCloseFilled /></el-icon>
 							退出系统
 						</el-dropdown-item>
@@ -43,7 +43,16 @@
 	</div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { LOGIN_TOKEN } from '@/global/constants'
+import { localCache } from '@/utils/cache'
+
+const router = useRouter()
+const handleExitClick = () => {
+	localCache.removeCache(LOGIN_TOKEN)
+	router.push('/login')
+}
+</script>
 
 <style lang="less" scoped>
 .header-info {

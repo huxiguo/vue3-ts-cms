@@ -6,10 +6,12 @@
 		</div>
 		<div class="menu">
 			<el-menu
+				:default-active="activePath"
 				:collapse="isFold"
 				active-text-color="#fff"
 				text-color="#b7bdc3"
 				background-color="#001529"
+				router
 			>
 				<template v-for="item in userMenus" :key="item.id">
 					<el-sub-menu :index="item.id + ''">
@@ -21,8 +23,8 @@
 						</template>
 						<template v-for="subitem in item.children" :key="subitem.is">
 							<el-menu-item
-								:index="subitem.id + ''"
-								@click="handelMenuItemClick(subitem)"
+								:index="subitem.url"
+								@click="handleMenuItemClick(subitem.url)"
 							>
 								{{ subitem.name }}
 							</el-menu-item>
@@ -36,18 +38,18 @@
 
 <script setup lang="ts">
 import useLoginStore from '@/store/login/login'
-const router = useRouter()
+import { localCache } from '@/utils/cache'
 const loginStore = useLoginStore()
 const { userMenus } = storeToRefs(loginStore)
+const activePath = ref(localCache.getCache('activePath') ?? '')
 defineProps({
 	isFold: {
 		type: Boolean,
 		default: false
 	}
 })
-const handelMenuItemClick = (item: any) => {
-	const url = item.url
-	router.push(url)
+const handleMenuItemClick = (url: any) => {
+	localCache.setCache('activePath', url)
 }
 </script>
 

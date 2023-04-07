@@ -1,12 +1,12 @@
 <template>
 	<div class="main">
 		<el-container class="main-content">
-			<el-aside width="210px">
-				<MainMenu />
+			<el-aside :width="isCollapse ? '60px' : '210px'">
+				<MainMenu :isFold="isCollapse" />
 			</el-aside>
 			<el-container>
 				<el-header height="50px">
-					<MainHeader />
+					<MainHeader @fold-change="handleFoldChange" />
 				</el-header>
 				<el-main>Main</el-main>
 			</el-container>
@@ -17,6 +17,10 @@
 <script setup lang="ts">
 import MainMenu from '@/components/main-menu/main-menu.vue'
 import MainHeader from '@/components/main-header/main-header.vue'
+const isCollapse = ref(false)
+const handleFoldChange = (isFold: boolean) => {
+	isCollapse.value = isFold
+}
 </script>
 
 <style scoped lang="less">

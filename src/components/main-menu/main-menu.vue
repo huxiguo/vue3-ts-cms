@@ -2,10 +2,11 @@
 	<div class="main-menu">
 		<div class="logo">
 			<img src="@/assets/img/logo.svg" alt="vite" />
-			<h2 class="title">SEEKHOO</h2>
+			<h2 v-show="!isFold" class="title">SEEKHOO</h2>
 		</div>
 		<div class="menu">
 			<el-menu
+				:collapse="isFold"
 				active-text-color="#fff"
 				text-color="#b7bdc3"
 				background-color="#001529"
@@ -13,6 +14,9 @@
 				<template v-for="item in userMenus" :key="item.id">
 					<el-sub-menu :index="item.id + ''">
 						<template #title>
+							<el-icon>
+								<component :is="item.icon.split('-icon-')[1]"></component>
+							</el-icon>
 							<span>{{ item.name }}</span>
 						</template>
 						<template v-for="subitem in item.children" :key="subitem.is">
@@ -31,6 +35,12 @@
 import useLoginStore from '@/store/login/login'
 const loginStore = useLoginStore()
 const { userMenus } = storeToRefs(loginStore)
+defineProps({
+	isFold: {
+		type: Boolean,
+		default: false
+	}
+})
 </script>
 
 <style lang="less" scoped>

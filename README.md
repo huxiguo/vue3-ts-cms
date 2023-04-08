@@ -16,11 +16,11 @@
 |     :heavy_minus_sign:      |     减少一个依赖      |
 |         :arrow_up:          |       升级依赖        |
 |        :arrow_down:         |       降级依赖        |
-|      :zap::racehorse:       |       提升性能        |
+|      :zap: :racehorse:      |       提升性能        |
 | :chart_with_upwards_trend:  |  添加分析或跟踪代码   |
 |          :rocket:           |       部署功能        |
 |     :white_check_mark:      |       增加测试        |
-|        :memo::book:         |       撰写文档        |
+|        :memo: :book:        |       撰写文档        |
 |          :hammer:           |       重大重构        |
 |            :art:            | 改进代码结构/代码格式 |
 |           :fire:            |    移除代码或文件     |
@@ -33,3 +33,5 @@
 |           :apple:           |  修复 macOS 下的问题  |
 |          :penguin:          |  修复 Linux 下的问题  |
 |      :checkered_flag:       | 修复 Windows 下的问题 |
+
+![Bower](https://img.shields.io/bower/l/vue)

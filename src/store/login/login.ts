@@ -7,13 +7,14 @@ import {
 } from '@/service/login/login'
 import type { IAccount } from '@/types/login'
 import { localCache } from '@/utils/cache'
+import MapMenusToRoutes from '@/utils/mapMenusRoutes'
 import { ElMessage } from 'element-plus'
 import { defineStore } from 'pinia'
 
 const useLoginStore = defineStore('login', () => {
-	const token = ref<string>(localCache.getCache(LOGIN_TOKEN) ?? '')
-	const userInfo = ref<any>(localCache.getCache('userInfo') ?? {})
-	const userMenus = ref<any>(localCache.getCache('userMenus') ?? [])
+	const token = ref<string>('')
+	const userInfo = ref<any>({})
+	const userMenus = ref<any>([])
 	async function loginAccountAction(account: IAccount) {
 		// 请求登录接口
 		const res = await accountLoginRequest(account)
@@ -37,10 +38,8 @@ const useLoginStore = defineStore('login', () => {
 			localCache.setCache('userMenus', userMenus.value)
 
 			// 动态路由
-			// const localRoute: RouteRecordRaw = []
-			const files = import.meta.glob('@/router/main/**/*.ts', { eager: true })
-			console.log(files)
-
+			const routes = MapMenusToRoutes(userMenus.value)
+			routes.forEach(item => router.addRoute('main', item))
 			// 页面跳转
 			router.push('/main')
 		} else {
@@ -50,11 +49,25 @@ const useLoginStore = defineStore('login', () => {
 			})
 		}
 	}
+	function LoadLocalCache() {
+		const LocalToken = localCache.getCache(LOGIN_TOKEN)
+		const LocalUserInfo = localCache.getCache('userInfo')
+		const LocalUserMenus = localCache.getCache('userMenus')
+		if (LocalToken && LocalUserInfo && LocalUserMenus) {
+			token.value = LocalToken
+			userInfo.value = LocalUserInfo
+			userMenus.value = LocalUserMenus
+			// 动态路由
+			const routes = MapMenusToRoutes(userMenus.value)
+			routes.forEach(item => router.addRoute('main', item))
+		}
+	}
 	return {
 		token,
 		userInfo,
 		userMenus,
-		loginAccountAction
+		loginAccountAction,
+		LoadLocalCache
 	}
 })
 export default useLoginStore

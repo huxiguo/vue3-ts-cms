@@ -1,5 +1,6 @@
 import { LOGIN_TOKEN } from '@/global/constants'
 import { localCache } from '@/utils/cache'
+import { firstMenu } from '@/utils/mapMenusRoutes'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -15,26 +16,8 @@ const router = createRouter({
 		},
 		{
 			path: '/main',
-			component: () => import('@/view/main/main.vue'),
-			children: [
-				{
-					path: '/main/analysis/dashboard',
-					component: () =>
-						import('@/view/main/analysis/dashboard/dashboard.vue')
-				},
-				{
-					path: '/main/analysis/overview',
-					component: () => import('@/view/main/analysis/overview/overview.vue')
-				},
-				{
-					path: '/main/system/user',
-					component: () => import('@/view/main/system/user/user.vue')
-				},
-				{
-					path: '/main/system/role',
-					component: () => import('@/view/main/system/role/role.vue')
-				}
-			]
+			name: 'main',
+			component: () => import('@/view/main/main.vue')
 		},
 		{
 			path: '/:pathMatch(.*)',
@@ -46,8 +29,12 @@ const router = createRouter({
 // 导航守卫
 router.beforeEach(to => {
 	const token = localCache.getCache(LOGIN_TOKEN)
-	if (to.path === '/main' && !token) {
+	if (to.path.startsWith('/main') && !token) {
 		return '/login'
+	}
+	if (to.path === '/main') {
+		localCache.setCache('activePath', firstMenu.url)
+		return firstMenu.url
 	}
 })
 export default router

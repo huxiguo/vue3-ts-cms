@@ -38,8 +38,15 @@
 					</template>
 				</el-table-column>
 				<el-table-column align="center" prop="createAt" label="创建时间">
+					<template #default="scope">
+						{{ formatUTC(scope.row.createAt) }}
+					</template>
 				</el-table-column>
-				<el-table-column align="center" prop="updateAt" label="更新时间" />
+				<el-table-column align="center" prop="updateAt" label="更新时间">
+					<template #default="scope">
+						{{ formatUTC(scope.row.updateAt) }}
+					</template>
+				</el-table-column>
 				<el-table-column align="center" label="操作" width="150px">
 					<el-button text type="primary" size="small" icon="Edit">
 						编辑
@@ -50,17 +57,49 @@
 				</el-table-column>
 			</el-table>
 		</div>
-		<div class="pagination">分页</div>
+		<div class="pagination">
+			<el-pagination
+				v-model:current-page="currentPage"
+				v-model:page-size="pageSize"
+				:page-sizes="[5, 7, 9, 15]"
+				background
+				layout="total, sizes, prev, pager, next, jumper"
+				:total="totalCount"
+				@size-change="handleSizeChange"
+				@current-change="handleCurrentChange"
+			/>
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 import useSystemStore from '@/store/main/system/system'
-// import { formatUTC } from '@/utils/format'
+import { formatUTC } from '@/utils/format'
 
 const systemStore = useSystemStore()
 const { useList, totalCount } = storeToRefs(systemStore)
-systemStore.postUserList()
+
+// 分页
+const currentPage = ref(1)
+const pageSize = ref(5)
+fetchListData()
+// 每页大小改变触发
+const handleSizeChange = () => {
+	fetchListData()
+}
+// 页码改变触发
+const handleCurrentChange = () => {
+	fetchListData()
+}
+// 请求分页数据
+function fetchListData() {
+	// 每页大小
+	const size = pageSize.value
+	// 页码
+	const offset = (currentPage.value - 1) * size
+	const info = { size, offset }
+	systemStore.postUserList(info)
+}
 </script>
 
 <style lang="less" scoped>
@@ -85,6 +124,9 @@ systemStore.postUserList()
 			margin-left: 0;
 			padding: 5px 8px;
 		}
+	}
+	.pagination {
+		margin-top: 10px;
 	}
 }
 </style>

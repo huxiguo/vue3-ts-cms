@@ -48,12 +48,20 @@
 					</template>
 				</el-table-column>
 				<el-table-column align="center" label="操作" width="150px">
-					<el-button text type="primary" size="small" icon="Edit">
-						编辑
-					</el-button>
-					<el-button text type="danger" size="small" icon="Delete">
-						删除
-					</el-button>
+					<template #default="scope">
+						<el-button text type="primary" size="small" icon="Edit">
+							编辑
+						</el-button>
+						<el-button
+							text
+							type="danger"
+							size="small"
+							icon="Delete"
+							@click="handleDeleteClick(scope.row.id)"
+						>
+							删除
+						</el-button>
+					</template>
 				</el-table-column>
 			</el-table>
 		</div>
@@ -75,10 +83,19 @@
 <script setup lang="ts">
 import useSystemStore from '@/store/main/system/system'
 import { formatUTC } from '@/utils/format'
+import { ElMessage } from 'element-plus'
 
 const systemStore = useSystemStore()
 const { useList, totalCount } = storeToRefs(systemStore)
-
+// 删除用户按钮
+const handleDeleteClick = async (id: number) => {
+	const res = await systemStore.deleteUserByIdAction(id)
+	ElMessage({
+		message: res.msg,
+		type: res.code ? 'success' : 'error'
+	})
+	fetchListData()
+}
 // 分页
 const currentPage = ref(1)
 const pageSize = ref(5)

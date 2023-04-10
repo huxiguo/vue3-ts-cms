@@ -1,4 +1,4 @@
-import { postUserListData } from '@/service/main/system/system'
+import { deleteUserById, postUserListData } from '@/service/main/system/system'
 import type { userList } from '@/types/userList'
 
 const useSystemStore = defineStore('system', () => {
@@ -9,10 +9,15 @@ const useSystemStore = defineStore('system', () => {
 		useList.value = res.list
 		totalCount.value = res.totalCount
 	}
+	async function deleteUserByIdAction(id: number) {
+		const res = await deleteUserById(id)
+		return res
+	}
 	return {
 		useList,
 		totalCount,
-		postUserList
+		postUserList,
+		deleteUserByIdAction
 	}
 })
 export default useSystemStore

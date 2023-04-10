@@ -6,8 +6,6 @@ const useSystemStore = defineStore('system', () => {
 	const totalCount = ref(0)
 	async function postUserList() {
 		const { data: res } = await postUserListData()
-		console.log(res)
-
 		useList.value = res.list
 		totalCount.value = res.totalCount
 	}

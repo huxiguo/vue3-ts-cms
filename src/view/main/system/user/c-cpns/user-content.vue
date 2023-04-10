@@ -92,14 +92,16 @@ const handleCurrentChange = () => {
 	fetchListData()
 }
 // 请求分页数据
-function fetchListData() {
+function fetchListData(searchForm: any = {}) {
 	// 每页大小
 	const size = pageSize.value
 	// 页码
 	const offset = (currentPage.value - 1) * size
 	const info = { size, offset }
-	systemStore.postUserList(info)
+	systemStore.postUserList({ ...info, ...searchForm })
 }
+// 暴露函数
+defineExpose({ fetchListData })
 </script>
 
 <style lang="less" scoped>

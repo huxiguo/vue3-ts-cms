@@ -73,7 +73,7 @@
 
 <script setup lang="ts">
 import type { ElForm } from 'element-plus'
-
+const emit = defineEmits(['queryClick', 'resetClick'])
 const searchFormRef = ref<InstanceType<typeof ElForm>>()
 const searchForm = reactive({
 	name: '',
@@ -85,9 +85,10 @@ const searchForm = reactive({
 // 重置按钮
 const handleResetClick = () => {
 	searchFormRef.value?.resetFields()
+	emit('resetClick')
 }
 const handleSearchClick = () => {
-	console.log('查询')
+	emit('queryClick', searchForm)
 }
 </script>
 

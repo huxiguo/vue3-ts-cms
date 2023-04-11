@@ -10,6 +10,7 @@ import { localCache } from '@/utils/cache'
 import MapMenusToRoutes from '@/utils/mapMenusRoutes'
 import { ElMessage } from 'element-plus'
 import { defineStore } from 'pinia'
+import useMainStore from '../main/main'
 
 const useLoginStore = defineStore('login', () => {
 	const token = ref<string>('')
@@ -37,6 +38,10 @@ const useLoginStore = defineStore('login', () => {
 			localCache.setCache('userInfo', userInfo.value)
 			localCache.setCache('userMenus', userMenus.value)
 
+			// 请求role，department数据
+			const mainStore = useMainStore()
+			mainStore.getUserRolesDataAction()
+
 			// 动态路由
 			const routes = MapMenusToRoutes(userMenus.value)
 			routes.forEach(item => router.addRoute('main', item))
@@ -57,6 +62,9 @@ const useLoginStore = defineStore('login', () => {
 			token.value = LocalToken
 			userInfo.value = LocalUserInfo
 			userMenus.value = LocalUserMenus
+			// 请求role，department数据
+			const mainStore = useMainStore()
+			mainStore.getUserRolesDataAction()
 			// 动态路由
 			const routes = MapMenusToRoutes(userMenus.value)
 			routes.forEach(item => router.addRoute('main', item))

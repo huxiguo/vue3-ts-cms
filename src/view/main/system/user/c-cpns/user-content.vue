@@ -2,7 +2,9 @@
 	<div class="user-content">
 		<div class="header">
 			<h3 class="title">用户列表</h3>
-			<el-button type="primary">新建用户</el-button>
+			<el-button type="primary" @click="handleCreateUserClick"
+				>新建用户</el-button
+			>
 		</div>
 		<div class="table">
 			<el-table border :data="useList" stripe style="width: 100%">
@@ -49,7 +51,13 @@
 				</el-table-column>
 				<el-table-column align="center" label="操作" width="150px">
 					<template #default="scope">
-						<el-button text type="primary" size="small" icon="Edit">
+						<el-button
+							text
+							type="primary"
+							size="small"
+							icon="Edit"
+							@click="handelEditClick(scope.row)"
+						>
 							编辑
 						</el-button>
 						<el-button
@@ -85,8 +93,14 @@ import useSystemStore from '@/store/main/system/system'
 import { formatUTC } from '@/utils/format'
 import { ElMessage } from 'element-plus'
 
+const emit = defineEmits(['createUserClick', 'editUserClick'])
+
 const systemStore = useSystemStore()
 const { useList, totalCount } = storeToRefs(systemStore)
+// 新建用户
+const handleCreateUserClick = () => {
+	emit('createUserClick')
+}
 // 删除用户按钮
 const handleDeleteClick = async (id: number) => {
 	const res = await systemStore.deleteUserByIdAction(id)
@@ -95,6 +109,10 @@ const handleDeleteClick = async (id: number) => {
 		type: res.code ? 'success' : 'error'
 	})
 	fetchListData()
+}
+// 编辑用户按钮
+const handelEditClick = (rowData: any) => {
+	emit('editUserClick', rowData)
 }
 // 分页
 const currentPage = ref(1)

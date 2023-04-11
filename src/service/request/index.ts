@@ -66,5 +66,8 @@ class Request {
 	delete<T = any>(config: MyRequestConfig<T>) {
 		return this.request({ ...config, method: 'DELETE' })
 	}
+	patch<T = any>(config: MyRequestConfig<T>) {
+		return this.request({ ...config, method: 'PATCH' })
+	}
 }
 export default Request

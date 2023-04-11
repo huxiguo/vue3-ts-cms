@@ -39,10 +39,14 @@
 </template>
 
 <script setup lang="ts">
+import { localCache } from '@/utils/cache'
 import panelAccount from './panel-account.vue'
 import panelPhone from './panel-phone.vue'
 
-const isKeepPwd = ref(false)
+const isKeepPwd = ref<boolean>(localCache.getCache('isKeepPwd') ?? false)
+watch(isKeepPwd, newVal => {
+	localCache.setCache('isKeepPwd', newVal)
+})
 const activeName = ref('account')
 
 const panelAccountRef = ref<InstanceType<typeof panelAccount>>()
@@ -50,7 +54,7 @@ const panelAccountRef = ref<InstanceType<typeof panelAccount>>()
 const handleLoginBtnClick = () => {
 	if (activeName.value === 'account') {
 		// 子组件实例
-		panelAccountRef.value?.loginAction()
+		panelAccountRef.value?.loginAction(isKeepPwd.value)
 	}
 }
 </script>

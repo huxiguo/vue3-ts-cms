@@ -8,8 +8,8 @@
 		<!-- content -->
 		<userContent
 			ref="userContentRef"
-			@create-user-click="handleContentCreateUserClick"
-			@edit-user-click="handleContentEditUserClick"
+			@create-click="handleContentCreateUserClick"
+			@edit-click="handleContentEditUserClick"
 		/>
 		<userModel ref="userModelRef" />
 	</div>

@@ -7,33 +7,27 @@
 			ref="searchFormRef"
 		>
 			<el-row :gutter="20">
-				<el-col :span="8">
-					<el-form-item label="部门名称" prop="name">
-						<el-input
-							placeholder="请输入查询的部门名称"
-							v-model:model-value="searchForm.name"
-						/>
-					</el-form-item>
-				</el-col>
-				<el-col :span="8">
-					<el-form-item label="部门领导" prop="leader">
-						<el-input
-							placeholder="请输入查询的部门领导"
-							v-model:model-value="searchForm.leader"
-						/>
-					</el-form-item>
-				</el-col>
-				<el-col :span="8">
-					<el-form-item label="创建时间" prop="createAt">
-						<el-date-picker
-							v-model:model-value="searchForm.createAt"
-							type="daterange"
-							range-separator="-"
-							start-placeholder="开始时间"
-							end-placeholder="结束时间"
-						/>
-					</el-form-item>
-				</el-col>
+				<template v-for="item in searchConfig.formItem" :key="item.prop">
+					<el-col :span="8">
+						<el-form-item :label="item.label" :prop="item.prop">
+							<template v-if="item.type === 'input'">
+								<el-input
+									v-model="searchForm[item.prop]"
+									:placeholder="item.placeholder"
+								></el-input>
+							</template>
+							<template v-if="item.type === 'date-picker'">
+								<el-date-picker
+									v-model:model-value="searchForm[item.prop]"
+									type="daterange"
+									range-separator="-"
+									start-placeholder="开始时间"
+									end-placeholder="结束时间"
+								/>
+							</template>
+						</el-form-item>
+					</el-col>
+				</template>
 			</el-row>
 		</el-form>
 		<div class="btn">
@@ -53,13 +47,23 @@
 
 <script setup lang="ts">
 import type { ElForm } from 'element-plus'
+interface PropsType {
+	searchConfig: {
+		formItem: any[]
+	}
+}
+
+const props = defineProps<PropsType>()
+
 const emit = defineEmits(['queryClick', 'resetClick'])
 const searchFormRef = ref<InstanceType<typeof ElForm>>()
-const searchForm = reactive({
-	name: '',
-	leader: '',
-	createAt: ''
-})
+
+// 配置表单数据
+const initForm: any = {}
+for (const item of props.searchConfig.formItem) {
+	initForm[item.prop] = ''
+}
+const searchForm = reactive(initForm)
 // 重置按钮
 const handleResetClick = () => {
 	searchFormRef.value?.resetFields()

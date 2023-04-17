@@ -1,65 +1,58 @@
 <template>
 	<div class="user-content">
 		<div class="header">
-			<h3 class="title">部门列表</h3>
-			<el-button type="primary" @click="handleCreateUserClick"
-				>新建部门</el-button
-			>
+			<h3 class="title">
+				{{ contentConfig.header?.title ?? '数据列表' }}
+			</h3>
+			<el-button type="primary" @click="handleCreateUserClick">
+				{{ contentConfig.header?.btnText ?? '新建数据' }}
+			</el-button>
 		</div>
 		<div class="table">
-			<el-table border :data="pageList" stripe style="width: 100%">
-				<el-table-column type="selection" />
-				<el-table-column type="index" label="#" />
-				<el-table-column
-					align="center"
-					prop="name"
-					label="部门名称"
-					width="120px"
-				/>
-				<el-table-column
-					align="center"
-					prop="leader"
-					label="部门领导"
-					width="120px"
-				/>
-				<el-table-column
-					align="center"
-					prop="parentId"
-					label="上级部门"
-					width="120px"
-				/>
-				<el-table-column align="center" prop="createAt" label="创建时间">
-					<template #default="scope">
-						{{ formatUTC(scope.row.createAt) }}
+			<el-table
+				border
+				:data="pageList"
+				stripe
+				style="width: 100%"
+				v-bind="contentConfig.childrenTree"
+				lazy
+			>
+				<template v-for="item in contentConfig.propsList" :key="item.prop">
+					<template v-if="item.type === 'custom'">
+						<el-table-column align="center" v-bind="item">
+							<template #default="scope">
+								<slot :name="item.soltName" v-bind="scope"></slot>
+							</template>
+						</el-table-column>
 					</template>
-				</el-table-column>
-				<el-table-column align="center" prop="updateAt" label="更新时间">
-					<template #default="scope">
-						{{ formatUTC(scope.row.updateAt) }}
+					<template v-else-if="item.type === 'handle'">
+						<el-table-column align="center" v-bind="item">
+							<template #default="scope">
+								<el-button
+									text
+									type="primary"
+									size="small"
+									icon="Edit"
+									@click="handelEditClick(scope.row)"
+								>
+									编辑
+								</el-button>
+								<el-button
+									text
+									type="danger"
+									size="small"
+									icon="Delete"
+									@click="handleDeleteClick(scope.row.id)"
+								>
+									删除
+								</el-button>
+							</template>
+						</el-table-column>
 					</template>
-				</el-table-column>
-				<el-table-column align="center" label="操作" width="150px">
-					<template #default="scope">
-						<el-button
-							text
-							type="primary"
-							size="small"
-							icon="Edit"
-							@click="handelEditClick(scope.row)"
-						>
-							编辑
-						</el-button>
-						<el-button
-							text
-							type="danger"
-							size="small"
-							icon="Delete"
-							@click="handleDeleteClick(scope.row.id)"
-						>
-							删除
-						</el-button>
+					<template v-else>
+						<el-table-column align="center" v-bind="item" />
 					</template>
-				</el-table-column>
+				</template>
 			</el-table>
 		</div>
 		<div class="pagination">
@@ -79,8 +72,21 @@
 
 <script setup lang="ts">
 import useSystemStore from '@/store/main/system/system'
-import { formatUTC } from '@/utils/format'
+
 import { ElMessage } from 'element-plus'
+
+interface PropsType {
+	contentConfig: {
+		pageName: string
+		header?: {
+			title?: string
+			btnText?: string
+		}
+		propsList: any[]
+		childrenTree?: any
+	}
+}
+const props = defineProps<PropsType>()
 
 const emit = defineEmits(['createClick', 'editClick'])
 
@@ -92,7 +98,10 @@ const handleCreateUserClick = () => {
 }
 // 删除按钮
 const handleDeleteClick = async (id: number) => {
-	const res = await systemStore.deletePageByIdAction('department', id)
+	const res = await systemStore.deletePageByIdAction(
+		props.contentConfig.pageName,
+		id
+	)
 	ElMessage({
 		message: res.msg,
 		type: res.code ? 'success' : 'error'
@@ -124,7 +133,7 @@ function fetchPageData(searchForm: any = {}) {
 	const info = { size, offset }
 	const queryInfo = { ...info, ...searchForm }
 	// 请求页面数据
-	systemStore.postPageListAction('department', queryInfo)
+	systemStore.postPageListAction(props.contentConfig.pageName, queryInfo)
 }
 // 暴露函数
 defineExpose({ fetchPageData })

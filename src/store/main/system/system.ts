@@ -27,7 +27,7 @@ const useSystemStore = defineStore('system', () => {
 	}
 	async function createUserAction(userinfo: UserInfo) {
 		await createUser(userinfo)
-		postUserList({ size: 10, offset: 0 })
+		postUserList({ size: 5, offset: 0 })
 	}
 	async function editUserAction(userinfo: any, id: any) {
 		const res = await editUser(userinfo, id)
@@ -54,13 +54,13 @@ const useSystemStore = defineStore('system', () => {
 		id: number
 	) {
 		const editPageDataRes = await editPageData(pageName, pageInfo, id)
-		postPageListAction(pageName, { offset: 0, size: 10 })
+		postPageListAction(pageName, { offset: 0, size: 5 })
 		return editPageDataRes
 	}
 	// 创建
 	async function createPageDataAction(pageName: string, pageInfo: any) {
 		const createPageDataRes = await createPageData(pageName, pageInfo)
-		postPageListAction(pageName, { offset: 0, size: 10 })
+		postPageListAction(pageName, { offset: 0, size: 5 })
 		return createPageDataRes
 	}
 	return {

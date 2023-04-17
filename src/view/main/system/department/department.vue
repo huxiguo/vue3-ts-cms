@@ -2,45 +2,59 @@
 	<div class="department">
 		<!-- 搜索 -->
 		<pageSearch
+			:search-config="searchConfig"
 			@query-click="handlePageQueryClick"
 			@reset-click="handlePageResetClick"
 		/>
 		<!-- 主体 -->
 		<pageContent
+			:content-config="contentConfig"
 			ref="pageContentRef"
 			@create-click="handlePageCreateClick"
 			@edit-click="handlePageEditClick"
-		/>
+		>
+			<template #createTime="scope">
+				{{ formatUTC(scope.row.createAt) }}
+			</template>
+			<template #updateTime="scope">
+				{{ formatUTC(scope.row.updateAt) }}
+			</template>
+		</pageContent>
 		<!-- 弹框 -->
-		<pageModel ref="pageModelRef" />
+		<pageModel :model-config="modelConfigCpt" ref="pageModelRef" />
 	</div>
 </template>
 
 <script setup lang="ts">
-import pageSearch from './c-cpns/page-search.vue'
-import pageContent from './c-cpns/page-content.vue'
-import pageModel from './c-cpns/page-model.vue'
+import { formatUTC } from '@/utils/format'
+import pageSearch from '@/components/page-search/page-search.vue'
+import pageContent from '@/components/page-content/page-content.vue'
+import pageModel from '@/components/page-model/page-model.vue'
+import searchConfig from './config/search.config'
+import contentConfig from './config/contetnt.config'
+import modelConfig from './config/model.config'
+import useMainStore from '@/store/main/main'
+import usePageModel from '@/hooks/usePageModel'
+import usePageContent from '@/hooks/usePageContent'
 
-// content 组件实例
-const pageContentRef = ref<InstanceType<typeof pageContent>>()
-// model 组件实例
-const pageModelRef = ref<InstanceType<typeof pageModel>>()
-// 页面点击查询按钮
-const handlePageQueryClick = (queryInfo: any) => {
-	pageContentRef.value?.fetchPageData(queryInfo)
-}
-// 页面点击重置按钮
-const handlePageResetClick = () => {
-	pageContentRef.value?.fetchPageData()
-}
-// 页面创建按钮
-const handlePageCreateClick = () => {
-	pageModelRef.value?.changeDialogData()
-}
-// 页面编辑按钮
-const handlePageEditClick = (rowData: any) => {
-	pageModelRef.value?.changeDialogData(rowData, false)
-}
+// 添加option
+const modelConfigCpt = computed<any>(() => {
+	const mainStore = useMainStore()
+	const list = mainStore.departmentList.map(item => {
+		return { label: item.name, value: item.id }
+	})
+	modelConfig.formItem.forEach(item => {
+		if (item.prop === 'parentId') {
+			item.option!.push(...list)
+		}
+	})
+	return modelConfig
+})
+
+const { pageContentRef, handlePageQueryClick, handlePageResetClick } =
+	usePageContent()
+const { pageModelRef, handlePageCreateClick, handlePageEditClick } =
+	usePageModel()
 </script>
 
 <style lang="less" scoped></style>

@@ -2,7 +2,9 @@
 	<div class="user-model">
 		<el-dialog
 			v-model="dialogVisible"
-			:title="isCreate ? '新建用户' : '编辑用户'"
+			:title="
+				isCreate ? modelConfig.header.newTitle : modelConfig.header.editTitle
+			"
 			width="30%"
 			center
 			:close-on-click-modal="false"
@@ -13,34 +15,34 @@
 				size="large"
 				:model="dialogFormData"
 				ref="dialogFormRef"
-				:rules="dialogFormRule"
 			>
-				<el-form-item label="部门名称" prop="name">
-					<el-input
-						placeholder="请输入部门名称"
-						clearable
-						v-model:model-value="dialogFormData.name"
-					/>
-				</el-form-item>
-				<el-form-item label="部门领导" prop="leader">
-					<el-input
-						placeholder="请输入部门领导"
-						clearable
-						v-model:model-value="dialogFormData.leader"
-					/>
-				</el-form-item>
-				<el-form-item label="选择部门" prop="parentId">
-					<el-select
-						placeholder="请输入部门"
-						clearable
-						style="width: 100%"
-						v-model:model-value="dialogFormData.parentId"
-					>
-						<template v-for="item in departmentList" :key="item.id">
-							<el-option :label="item.name" :value="item.id" />
+				<template v-for="item in modelConfig.formItem" :key="item.prop">
+					<el-form-item :label="item.label" :prop="item.prop">
+						<template v-if="item.type === 'input'">
+							<el-input
+								v-model="dialogFormData[item.prop]"
+								:placeholder="item.placeholder"
+							/>
 						</template>
-					</el-select>
-				</el-form-item>
+						<template v-if="item.type === 'select'">
+							<el-select
+								v-model:model-value="dialogFormData[item.prop]"
+								:placeholder="item.placeholder"
+								style="width: 100%"
+							>
+								<template v-for="option in item.option" :key="option.value">
+									<el-option
+										:label="option.label"
+										:value="option.value"
+									></el-option>
+								</template>
+							</el-select>
+						</template>
+						<template v-if="item.type === 'custom'">
+							<slot :name="item.slotName"> </slot>
+						</template>
+					</el-form-item>
+				</template>
 			</el-form>
 			<template #footer>
 				<div>
@@ -55,32 +57,36 @@
 </template>
 
 <script setup lang="ts">
-import useMainStore from '@/store/main/main'
 import useSystemStore from '@/store/main/system/system'
 import { ElMessage, type FormInstance } from 'element-plus'
 
 const systemStore = useSystemStore()
-const mainStore = useMainStore()
-const { departmentList } = storeToRefs(mainStore)
+
+interface PropsType {
+	modelConfig: {
+		pageName: string
+		header: {
+			newTitle: string
+			editTitle: string
+		}
+		formItem: any[]
+	}
+	otherInfo?: any
+}
+const props = defineProps<PropsType>()
 
 // 是否弹出dialog
 const dialogVisible = ref(false)
 // 是否是新建,还可以是编辑
 const isCreate = ref(true)
 // 表单数据
-const dialogFormData = reactive<any>({
-	name: '',
-	leader: '',
-	parentId: ''
-})
+const initData: any = {}
+for (const item of props.modelConfig.formItem) {
+	initData[item.prop] = ''
+}
+const dialogFormData = reactive<any>(initData)
 // 传入的行数据
 const editRowData = ref()
-// 表单校验规则
-const dialogFormRule = {
-	name: [{ required: true, message: '请输入部门名称', trigger: 'blur' }],
-	leader: [{ required: true, message: '请输入部门领导', trigger: 'blur' }],
-	parentId: [{ required: true, message: '请选择部门', trigger: 'blur' }]
-}
 // 表单Ref
 const dialogFormRef = ref<FormInstance>()
 
@@ -95,13 +101,17 @@ const handleCancleClick = () => {
 // 确定创建用户
 const handleConfirmClick = () => {
 	dialogFormRef.value?.validate(async valid => {
+		let infoData = dialogFormData
+		if (props.otherInfo) {
+			infoData = { ...infoData, ...props.otherInfo }
+		}
 		// 验证成功
 		if (valid) {
 			// 新建用户
 			if (isCreate.value) {
 				const res = await systemStore.createPageDataAction(
-					'department',
-					dialogFormData
+					props.modelConfig.pageName,
+					infoData
 				)
 				// 关闭model
 				dialogVisible.value = false
@@ -114,8 +124,8 @@ const handleConfirmClick = () => {
 			} else {
 				// 编辑用户
 				const res = await systemStore.editPageByIdAction(
-					'department',
-					dialogFormData,
+					props.modelConfig.pageName,
+					infoData,
 					editRowData.value.id
 				)
 				ElMessage({
